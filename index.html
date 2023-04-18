@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>2D Map with Character Movement</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+
+    <script>
+      // Canvasの初期化
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 玉の情報
+      const redBall = {
+        x: 50,
+        y: 50,
+        radius: 30
+      };
+
+      const greenBall = {
+        x: 200,
+        y: 100,
+        radius: 20,
+        clickCount: 0
+      };
+
+      const blueBall = {
+        x: 200,
+        y: 100,
+        radius: 20,
+        clickCount: 0
+      };
+
+      // 玉の描画処理
+      function drawBalls() {
+        // 赤い玉
+        ctx.beginPath();
+        ctx.arc(redBall.x, redBall.y, redBall.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "red";
+        ctx.fill();
+        ctx.closePath();
+
+        // 緑色の玉
+        ctx.beginPath();
+        ctx.arc(greenBall.x, greenBall.y, greenBall.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "green";
+        ctx.fill();
+        ctx.closePath();
+
+        // 青色の玉
+        ctx.beginPath();
+        ctx.arc(blueBall.x, blueBall.y, blueBall.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "blue";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      // マウスクリックイベント
+      canvas.addEventListener("mousedown", function (event) {
+        const mousePos = {
+          x: event.clientX - canvas.offsetLeft,
+          y: event.clientY - canvas.offsetTop
+        };
+
+        // 赤い玉の当たり判定
+        const distanceFromRed = Math.sqrt(
+          (mousePos.x - redBall.x) ** 2 + (mousePos.y - redBall.y) ** 2
+        );
+        if (distanceFromRed <= redBall.radius) {
+          redBall.x = Math.random() * canvas.width;
+          redBall.y = Math.random() * canvas.height;
+        }
+
+        // 緑色の玉の当たり判定
+        const distanceFromGreen = Math.sqrt(
+          (mousePos.x - greenBall.x) ** 2 + (mousePos.y - greenBall.y) ** 2
+        );
+        if (distanceFromGreen <= greenBall.radius) {
+          greenBall.clickCount++;
+          if (greenBall.clickCount >= 2) {
+            greenBall.x = Math.random() * canvas.width;
+            greenBall.y = Math.random() * canvas.height;
+            greenBall.clickCount = 0;
+          }
+        }
+
+        // 青い色の玉の当たり判定
+        const distanceFromBlue = Math.sqrt(
+          (mousePos.x - blueBall.x) ** 2 + (mousePos.y - blueBall.y) ** 2
+        );
+        if (distanceFromBlue <= blueBall.radius) {
+          blueBall.x = Math.random() * canvas.width;
+          blueBall.y = Math.random() * canvas.height;
+        }
+      });
+
+      // ゲームループ
+      function gameLoop() {
+        // 画面をクリア
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 玉を描画
+        drawBalls();
+
+        // 緑色の玉の移動
+        greenBall.x += 6 - 0;
+        greenBall.y += 0 - 0;
+        if (greenBall.x < 0 || greenBall.x > canvas.width) {
+          greenBall.x = Math.random() * canvas.width;
+        }
+        if (greenBall.y < 0 || greenBall.y > canvas.height) {
+          greenBall.y = Math.random() * canvas.height;
+        }
+
+        blueBall.y += 5;
+        if (blueBall.y < 0 || blueBall.y > canvas.height) {
+          blueBall.y = Math.random() * canvas.height;
+        }
+
+        // 次のループを予約
+        requestAnimationFrame(gameLoop);
+      }
+
+      // ゲーム開始
+      gameLoop();
+    </script>
+  </body>
+</html>
